@@ -1,0 +1,5 @@
+{
+    "max_len": 159,
+    "src_vocab_size": 4518,
+    "tgt_vocab_size": 4341
+}
