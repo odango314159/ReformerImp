@@ -1,4 +1,4 @@
-# TransformerImp
+# ReformerImp
 ---
 Reformerの実装をするためのリポジトリ
 ## Quick Start
