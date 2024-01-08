@@ -1,5 +1,6 @@
 #include <iostream>
 #include <array>
+#include <vector>
 #include <algorithm>
 #include <numeric>
 #include <random>
@@ -73,15 +74,35 @@ namespace LSH {
   public:
     typedef array<T, d> data_type;
 
+    array<unordered_map<lshHash, vector<int>>, L> bucketMap;
+    
+    
     void add(data_type const& val) {
       data.push_back(data_type(val));
       auto& v = data[data.size() - 1];
 
       // L個のハッシュテーブルに値を格納
-      for(int i = 0; i < L; i++)
+      for(int i = 0; i < L; i++){
+        auto h = g[i](v);
         hash_tables[i].insert(make_pair(g[i](v), data.size() - 1));
+        bucketMap[i][h].push_back(data.size()-1);
+      }
     }
-
+    void listVectorsInBuckets() const {
+        for (int i = 0; i < L; i++) {
+        cout << "バケット " << i << ":" << endl;
+        for (auto& pair : bucketMap[i]) {
+          cout << "  ハッシュ値 (" << pair.first.h1 << ", " << pair.first.h2 << "): ";
+          for (int index : pair.second) {
+            for (T val : data[index]) {
+              cout << val << " ";
+            }
+            cout << "; ";
+          }
+          cout << endl;
+        }
+      }
+    }
     unordered_set<const data_type*> query(data_type const& query_data) const{
       unordered_set<const data_type*> result;
 
@@ -112,4 +133,29 @@ namespace std {
       return h.h1;
     }
   };
+}
+int main() {
+    const int d = 10; // 次元数
+    const int k = 4;  // ハッシュコード長
+    const int L = 10; // バケット数
+    const int r = 2;  // ハッシュパラメータ
+
+    // LSH::pStable クラスのインスタンスを作成
+    LSH::pStable<double, k, L, d, r> lsh;
+
+    // ベクトルを追加
+    std::array<double, d> vector1 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    std::array<double, d> vector2 = {10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+    std::array<double, d> vector3 = {1, 3, 5, 7, 9, 2, 4, 6, 8, 10};
+    
+    lsh.add(vector1);
+    lsh.add(vector2);
+    lsh.add(vector3);
+
+    // 各バケットに含まれるベクトルを表示
+    lsh.listVectorsInBuckets();
+
+    
+
+    return 0;
 }
