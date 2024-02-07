@@ -5,7 +5,8 @@ __pycache__/
 
 # C extensions
 *.so
-
+# Trash系のファイルいらないから消しとく
+.Trash-0/
 # Distribution / packaging
 .Python
 build/
