@@ -27,7 +27,7 @@ class Calculate_LSH:
     def __cal_hash(
         self,
         input:torch.tensor,
-    ):
+    )-> torch.tensor:
         ## requires->行列
         ## effects->ハッシュを計算、単語ごとにハッシュを割り当ててラベルベクトルとして返す。
         x_R = input@self.R
